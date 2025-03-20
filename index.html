@@ -7,7 +7,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: black; position: relative; overflow: hidden; }
-        canvas { border: 2px solid white; width: 100vw; height: 90vh; }
+        canvas { border: 2px solid white; width: 90vw; height: 80vh; }
         .controls { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: space-around; }
         button { width: 80px; height: 80px; font-size: 24px; border-radius: 50%; border: none; background: white; color: black; }
         .scoreboard { position: absolute; top: 10px; color: white; font-size: 20px; font-family: Arial, sans-serif; }
@@ -24,8 +24,8 @@
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
         const scoreboard = document.getElementById("scoreboard");
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight * 0.9;
+        canvas.width = window.innerWidth * 0.9;
+        canvas.height = window.innerHeight * 0.8;
 
         const paddleWidth = 15, paddleHeight = 100;
         let playerY = (canvas.height - paddleHeight) / 2;
