@@ -7,7 +7,7 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: black; position: relative; overflow: hidden; }
-        canvas { border: 2px solid white; width: 90vw; height: 80vh; }
+        canvas { border: 2px solid white; width: 100vw; height: 90vh; }
         .controls { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 20px; }
         button { width: 60px; height: 60px; font-size: 24px; border-radius: 50%; border: none; background: white; color: black; }
         .scoreboard { position: absolute; top: 10px; color: white; font-size: 20px; font-family: Arial, sans-serif; }
@@ -24,14 +24,14 @@
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
         const scoreboard = document.getElementById("scoreboard");
-        canvas.width = window.innerWidth * 0.9;
-        canvas.height = window.innerHeight * 0.8;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight * 0.9;
 
-        const paddleWidth = 10, paddleHeight = 80;
+        const paddleWidth = 15, paddleHeight = 100;
         let playerY = (canvas.height - paddleHeight) / 2;
         let aiY = (canvas.height - paddleHeight) / 2;
         let ballX = canvas.width / 2, ballY = canvas.height / 2;
-        let ballSpeedX = 2, ballSpeedY = 2;
+        let ballSpeedX = 3, ballSpeedY = 3;
         let playerScore = 0, aiScore = 0;
         let level = 1;
         
@@ -51,20 +51,20 @@
             ballX += ballSpeedX;
             ballY += ballSpeedY;
             
-            if (ballY <= 0 || ballY >= canvas.height) ballSpeedY *= -1;
-            if (ballX <= 20 && ballY > playerY && ballY < playerY + paddleHeight) {
-                ballSpeedX *= -1;
+            if (ballX <= 0 || ballX >= canvas.width) ballSpeedX *= -1;
+            if (ballY <= playerY + paddleHeight && ballY >= playerY && ballX <= 20) {
+                ballSpeedY *= -1;
             }
-            if (ballX >= canvas.width - 20 && ballY > aiY && ballY < aiY + paddleHeight) {
-                ballSpeedX *= -1;
+            if (ballY <= aiY + paddleHeight && ballY >= aiY && ballX >= canvas.width - 20) {
+                ballSpeedY *= -1;
             }
             
-            if (ballX < 0) {
+            if (ballY < 0) {
                 aiScore++;
                 checkGameOver();
                 resetBall();
             }
-            if (ballX > canvas.width) {
+            if (ballY > canvas.height) {
                 playerScore++;
                 resetBall();
             }
@@ -76,8 +76,8 @@
         function resetBall() {
             ballX = canvas.width / 2;
             ballY = canvas.height / 2;
-            ballSpeedX = 2 + level * 0.5;
-            ballSpeedY = (Math.random() > 0.5 ? 2 : -2) + level * 0.5;
+            ballSpeedX = 3 + level * 0.5;
+            ballSpeedY = (Math.random() > 0.5 ? 3 : -3) + level * 0.5;
         }
 
         function updateScoreboard() {
