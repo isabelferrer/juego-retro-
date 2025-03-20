@@ -8,8 +8,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; background: black; position: relative; overflow: hidden; }
         canvas { border: 2px solid white; width: 100vw; height: 90vh; }
-        .controls { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 20px; }
-        button { width: 60px; height: 60px; font-size: 24px; border-radius: 50%; border: none; background: white; color: black; }
+        .controls { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: space-around; }
+        button { width: 80px; height: 80px; font-size: 24px; border-radius: 50%; border: none; background: white; color: black; }
         .scoreboard { position: absolute; top: 10px; color: white; font-size: 20px; font-family: Arial, sans-serif; }
     </style>
 </head>
@@ -45,6 +45,17 @@
             ctx.beginPath();
             ctx.arc(x, y, radius, 0, Math.PI * 2);
             ctx.fill();
+        }
+
+        function drawCenterLine() {
+            ctx.strokeStyle = "white";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([10, 10]);
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, 0);
+            ctx.lineTo(canvas.width / 2, canvas.height);
+            ctx.stroke();
+            ctx.setLineDash([]);
         }
 
         function update() {
@@ -97,6 +108,7 @@
 
         function draw() {
             drawRect(0, 0, canvas.width, canvas.height, "black");
+            drawCenterLine();
             drawRect(10, playerY, paddleWidth, paddleHeight, "white");
             drawRect(canvas.width - 20, aiY, paddleWidth, paddleHeight, "white");
             drawCircle(ballX, ballY, 10, "white");
@@ -108,12 +120,6 @@
             requestAnimationFrame(gameLoop);
         }
         
-        document.addEventListener("touchmove", (e) => {
-            let touch = e.touches[0];
-            let rect = canvas.getBoundingClientRect();
-            playerY = touch.clientY - rect.top - paddleHeight / 2;
-        });
-
         document.getElementById("up").addEventListener("touchstart", () => {
             playerY -= 40;
         });
