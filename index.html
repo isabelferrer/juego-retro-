@@ -2,15 +2,15 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Pong Retro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: black; position: relative; }
-        canvas { border: 2px solid white; }
-        .controls { position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: center; gap: 20px; }
-        button { width: 50px; height: 50px; font-size: 20px; }
-        .scoreboard { position: absolute; top: 20px; color: white; font-size: 24px; font-family: Arial, sans-serif; }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: black; position: relative; overflow: hidden; }
+        canvas { border: 2px solid white; max-width: 100vw; max-height: 100vh; }
+        .controls { position: absolute; bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 20px; }
+        button { width: 60px; height: 60px; font-size: 24px; border-radius: 50%; border: none; background: white; color: black; }
+        .scoreboard { position: absolute; top: 10px; color: white; font-size: 20px; font-family: Arial, sans-serif; }
     </style>
 </head>
 <body>
@@ -24,20 +24,17 @@
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
         const scoreboard = document.getElementById("scoreboard");
-        canvas.width = 800;
-        canvas.height = 400;
+        canvas.width = window.innerWidth > 600 ? 800 : window.innerWidth - 20;
+        canvas.height = window.innerHeight > 400 ? 400 : window.innerHeight - 100;
 
         const paddleWidth = 10, paddleHeight = 80;
         let playerY = (canvas.height - paddleHeight) / 2;
         let aiY = (canvas.height - paddleHeight) / 2;
         let ballX = canvas.width / 2, ballY = canvas.height / 2;
-        let ballSpeedX = 3, ballSpeedY = 3;
+        let ballSpeedX = 2, ballSpeedY = 2;
         let playerScore = 0, aiScore = 0;
         let level = 1;
         
-        const hitSound = new Audio('https://www.fesliyanstudios.com/play-mp3/387');
-        const scoreSound = new Audio('https://www.fesliyanstudios.com/play-mp3/439');
-
         function drawRect(x, y, width, height, color) {
             ctx.fillStyle = color;
             ctx.fillRect(x, y, width, height);
@@ -57,23 +54,18 @@
             if (ballY <= 0 || ballY >= canvas.height) ballSpeedY *= -1;
             if (ballX <= 20 && ballY > playerY && ballY < playerY + paddleHeight) {
                 ballSpeedX *= -1;
-                hitSound.play();
-                increaseDifficulty();
             }
             if (ballX >= canvas.width - 20 && ballY > aiY && ballY < aiY + paddleHeight) {
                 ballSpeedX *= -1;
-                hitSound.play();
             }
             
             if (ballX < 0) {
                 aiScore++;
-                scoreSound.play();
                 checkGameOver();
                 resetBall();
             }
             if (ballX > canvas.width) {
                 playerScore++;
-                scoreSound.play();
                 resetBall();
             }
             
@@ -84,12 +76,8 @@
         function resetBall() {
             ballX = canvas.width / 2;
             ballY = canvas.height / 2;
-            ballSpeedX = 3 + level * 0.5;
-            ballSpeedY = (Math.random() > 0.5 ? 3 : -3) + level * 0.5;
-        }
-
-        function increaseDifficulty() {
-            if (level < 10) level++;
+            ballSpeedX = 2 + level * 0.5;
+            ballSpeedY = (Math.random() > 0.5 ? 2 : -2) + level * 0.5;
         }
 
         function updateScoreboard() {
@@ -120,22 +108,18 @@
             requestAnimationFrame(gameLoop);
         }
         
-        document.addEventListener("mousemove", (e) => {
-            playerY = e.clientY - paddleHeight / 2;
-        });
-        
         document.addEventListener("touchmove", (e) => {
             let touch = e.touches[0];
             let rect = canvas.getBoundingClientRect();
             playerY = touch.clientY - rect.top - paddleHeight / 2;
         });
 
-        document.getElementById("up").addEventListener("click", () => {
-            playerY -= 20;
+        document.getElementById("up").addEventListener("touchstart", () => {
+            playerY -= 40;
         });
 
-        document.getElementById("down").addEventListener("click", () => {
-            playerY += 20;
+        document.getElementById("down").addEventListener("touchstart", () => {
+            playerY += 40;
         });
         
         gameLoop();
